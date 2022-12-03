@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping
     public UserDto createUser(@Validated({Marker.OnCreate.class})
-                                  @NotNull @RequestBody UserDto userDto) {
+                              @NotNull @RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
