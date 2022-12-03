@@ -3,7 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.ValidationMarker;
+import ru.practicum.shareit.Marker;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -37,14 +37,14 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@RequestHeader(HEADER_USER_ID) Long userId,
-                              @Validated({ValidationMarker.Create.class}) @NotNull @RequestBody ItemDto itemDto) {
+                              @Validated({Marker.OnCreate.class}) @NotNull @RequestBody ItemDto itemDto) {
         return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader(HEADER_USER_ID) Long userId,
                               @PathVariable Long itemId,
-                              @Validated(ValidationMarker.Update.class) @NotNull @RequestBody ItemDto itemDto) {
+                              @Validated(Marker.OnUpdate.class) @NotNull @RequestBody ItemDto itemDto) {
         return itemService.updateItem(itemDto, itemId, userId);
     }
 
