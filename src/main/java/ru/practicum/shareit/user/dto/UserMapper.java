@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class UserMapper {
-
     public static UserDto toUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
@@ -25,7 +24,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static List<UserDto> toUserDtoList (List<User> users) {
+    public static List<UserDto> toUserDtoList(List<User> users) {
         return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 }
