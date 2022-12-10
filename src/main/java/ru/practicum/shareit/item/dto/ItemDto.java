@@ -3,14 +3,11 @@ package ru.practicum.shareit.item.dto;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.Marker;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Builder
 public class ItemDto {
@@ -25,7 +22,7 @@ public class ItemDto {
     @NotNull(groups = {Marker.OnCreate.class})
     private Boolean available;
 
-    private User owner;
+    private UserDto owner;
 
     private Long requestId;
 }

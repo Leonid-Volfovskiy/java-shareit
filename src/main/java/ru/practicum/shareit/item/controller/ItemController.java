@@ -8,11 +8,9 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
@@ -26,31 +24,35 @@ public class ItemController {
     }
 
     @GetMapping("{itemId}")
-    public ItemDto getItemById(@PathVariable Long itemId) {
+    public ItemDto getById(@PathVariable Long itemId) {
         return itemService.getItemById(itemId);
     }
 
     @GetMapping("search")
-    public List<ItemDto> searchItems(@RequestParam String text) {
-        return itemService.findItems(text);
+    public List<ItemDto> search(@RequestParam String text) {
+        if (text.isEmpty() || text.isBlank()) {
+            return Collections.emptyList();
+        } else {
+            return itemService.findItems(text);
+        }
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader(HEADER_USER_ID) Long userId,
-                              @Validated({Marker.OnCreate.class}) @NotNull @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader(HEADER_USER_ID) Long userId,
+                          @Validated({Marker.OnCreate.class}) @NotNull @RequestBody (required = false) ItemDto itemDto) {
         return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(HEADER_USER_ID) Long userId,
-                              @PathVariable Long itemId,
-                              @Validated(Marker.OnUpdate.class) @NotNull @RequestBody ItemDto itemDto) {
+    public ItemDto update(@RequestHeader(HEADER_USER_ID) Long userId,
+                          @PathVariable Long itemId,
+                          @Validated(Marker.OnUpdate.class) @NotNull @RequestBody (required = false) ItemDto itemDto) {
         return itemService.updateItem(itemDto, itemId, userId);
     }
 
     @DeleteMapping("/{itemId}")
-    public ItemDto deleteItem(@RequestHeader(HEADER_USER_ID) Long userId,
-                              @PathVariable Long itemId) {
+    public ItemDto delete(@RequestHeader(HEADER_USER_ID) Long userId,
+                          @PathVariable Long itemId) {
         return itemService.deleteItem(itemId, userId);
     }
 }

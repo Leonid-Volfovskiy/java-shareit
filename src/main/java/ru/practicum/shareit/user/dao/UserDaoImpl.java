@@ -25,10 +25,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(Long id, User userForUpdate) {
         User user = users.get(id);
-        if (userForUpdate.getName() != null) {
+        if (userForUpdate.getName() != null && !userForUpdate.getName().isBlank()) {
             user.setName(userForUpdate.getName());
         }
-        if (userForUpdate.getEmail() != null) {
+        if (userForUpdate.getEmail() != null && !userForUpdate.getEmail().isBlank()) {
             user.setEmail(userForUpdate.getEmail());
         }
         users.put(id, user);

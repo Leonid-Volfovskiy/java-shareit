@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.OwnerItemException;
 import ru.practicum.shareit.item.dao.ItemDao;
@@ -13,7 +12,6 @@ import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,10 +38,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> findItems(String query) {
-        if (query.isEmpty() || query.isBlank()) {
-            return Collections.emptyList();
-        }
-
         return itemRepository.search(query).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
@@ -52,17 +46,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto createItem(ItemDto itemDto, Long userId) {
         User owner = UserMapper.toUser(userService.getUserById(userId));
-        if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
-            throw new BadRequestException("Name can not be empty");
-        }
-        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
-            throw new BadRequestException("Description can not be empty");
-        }
-        if (itemDto.getAvailable() == null) {
-            throw new BadRequestException("Available can not be empty");
-        }
         Item item = ItemMapper.toItem(itemDto, owner, null);
-
         return ItemMapper.toItemDto(itemRepository.create(item));
     }
 
@@ -71,12 +55,12 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.getById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item with id = " + itemId + " not found"));
         if (!item.getOwner().getId().equals(userId)) {
-            throw new OwnerItemException("Only owner can edit the Item");
+            throw new OwnerItemException("Only owner can edit the Item.");
         }
-        if (itemDto.getName() != null) {
+        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
             item.setName(itemDto.getName());
         }
-        if (itemDto.getDescription() != null) {
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
             item.setDescription(itemDto.getDescription());
         }
         if (itemDto.getAvailable() != null) {
@@ -89,6 +73,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto deleteItem(Long itemId, Long userId) {
         ItemDto itemDto = getItemById(itemId);
+        if (!itemDto.getOwner().getId().equals(userId)) {
+            throw new OwnerItemException("Only owner can edit the Item.");
+        }
         itemRepository.delete(itemId);
 
         return itemDto;
