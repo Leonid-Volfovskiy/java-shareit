@@ -7,7 +7,6 @@ import ru.practicum.shareit.Marker;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -27,15 +26,13 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@Validated({Marker.OnCreate.class})
-                              @NotNull @RequestBody (required = false) UserDto userDto) {
+    public UserDto create(@Validated({Marker.OnCreate.class}) @RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
     @PatchMapping("/{userId}")
     public UserDto update(@PathVariable Long userId,
-                          @Validated(Marker.OnUpdate.class)
-                              @NotNull @RequestBody (required = false) UserDto userDto) {
+                          @Validated(Marker.OnUpdate.class) @RequestBody UserDto userDto) {
         return userService.updateUser(userId, userDto);
     }
 

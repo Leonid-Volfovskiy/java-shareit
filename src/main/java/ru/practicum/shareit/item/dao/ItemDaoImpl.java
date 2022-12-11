@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class ItemDaoImp implements ItemDao {
+public class ItemDaoImpl implements ItemDao {
     private final Map<Long, Item> items = new HashMap<>();
     private static long idItemCounter = 0;
 
@@ -29,7 +29,16 @@ public class ItemDaoImp implements ItemDao {
     @Override
     public Item update(Long id, Item patchItem) {
         Item item = items.get(id);
-        items.put(id, item);
+        if (!patchItem.getName().isBlank())
+            item.setName(patchItem.getName());
+        if (!patchItem.getDescription().isBlank())
+            item.setDescription(patchItem.getDescription());
+        if (patchItem.getAvailable() != null)
+            item.setAvailable(patchItem.getAvailable());
+        if (patchItem.getOwner() != null)
+            item.setOwner(patchItem.getOwner());
+        if (patchItem.getRequest() != null)
+            item.setRequest(patchItem.getRequest());
         return item;
     }
 

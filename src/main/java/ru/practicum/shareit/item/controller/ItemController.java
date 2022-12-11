@@ -7,7 +7,6 @@ import ru.practicum.shareit.Marker;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class ItemController {
 
     @GetMapping("search")
     public List<ItemDto> search(@RequestParam String text) {
-        if (text.isEmpty() || text.isBlank()) {
+        if (text.isBlank()) {
             return Collections.emptyList();
         } else {
             return itemService.findItems(text);
@@ -39,14 +38,14 @@ public class ItemController {
 
     @PostMapping
     public ItemDto create(@RequestHeader(HEADER_USER_ID) Long userId,
-                          @Validated({Marker.OnCreate.class}) @NotNull @RequestBody (required = false) ItemDto itemDto) {
+                          @Validated({Marker.OnCreate.class}) @RequestBody ItemDto itemDto) {
         return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestHeader(HEADER_USER_ID) Long userId,
                           @PathVariable Long itemId,
-                          @Validated(Marker.OnUpdate.class) @NotNull @RequestBody (required = false) ItemDto itemDto) {
+                          @Validated(Marker.OnUpdate.class) @RequestBody ItemDto itemDto) {
         return itemService.updateItem(itemDto, itemId, userId);
     }
 

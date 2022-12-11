@@ -30,9 +30,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(Long itemId) {
-        Item item = itemRepository.getById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item with id = " + itemId + " not found"));
-
+        Item item = checkItem(itemId);
         return ItemMapper.toItemDto(item);
     }
 
@@ -52,8 +50,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) {
-        Item item = itemRepository.getById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item with id = " + itemId + " not found"));
+        Item item = checkItem(itemId);
         if (!item.getOwner().getId().equals(userId)) {
             throw new OwnerItemException("Only owner can edit the Item.");
         }
@@ -67,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(itemDto.getAvailable());
         }
 
-        return ItemMapper.toItemDto(itemRepository.update(itemId, item));
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
@@ -81,4 +78,8 @@ public class ItemServiceImpl implements ItemService {
         return itemDto;
     }
 
+    private Item checkItem(Long itemId) {
+        return itemRepository.getById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item with id = " + itemId + " not found"));
+    }
 }
