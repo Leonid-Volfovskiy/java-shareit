@@ -31,7 +31,6 @@ public class UserDaoImpl implements UserDao {
         if (userForUpdate.getEmail() != null && !userForUpdate.getEmail().isBlank()) {
             user.setEmail(userForUpdate.getEmail());
         }
-        users.put(id, user);
         return user;
     }
 
