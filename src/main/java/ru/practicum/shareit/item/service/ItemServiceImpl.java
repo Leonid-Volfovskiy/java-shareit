@@ -46,16 +46,24 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public List<ItemDto> getByOwner(Long ownerId) {
         List<Item> itemList = itemRepository.findAllByOwnerId(ownerId);
-        List<Long> items = itemList.stream().map(Item::getId).collect(toList());//needs to select bookings
+        List<Long> items = itemList.stream().map(Item::getId).collect(toList());
+
         List<LastNextBookingDto> findLastNextBooking = bookingRepository.findLastNextBooking(items);
+
+        if (findLastNextBooking.isEmpty()) {
+            throw new NotFoundException("Items not found");
+        }
+
         Map<Item, List<Comment>> comments = commentRepository.findAllByItemIn(itemList,
                 Sort.by(DESC, "created")).stream().collect(groupingBy(Comment::getItem, toList()));
         return itemList.stream().map(item -> {
             ItemDto itemDto = ItemMapper.toItemDto(item);
+
             LastNextBookingDto lastNextBookingDto =
                     findLastNextBooking.stream()
                             .filter(o -> o.getItemId().equals(itemDto.getId()))
                             .collect(toList()).get(0);
+
             ItemDto.BookingTiny lastBooking =
                     ItemDto.BookingTiny.builder()
                             .id(lastNextBookingDto.getLastBookingId())
@@ -64,11 +72,12 @@ public class ItemServiceImpl implements ItemService {
                     ItemDto.BookingTiny.builder()
                             .id(lastNextBookingDto.getNextBookingId())
                             .bookerId(lastNextBookingDto.getNextBookingBookerId()).build();
+
             itemDto.setLastBooking(lastBooking.getId() == 0 ? null : lastBooking);
             itemDto.setNextBooking(nextBooking.getId() == 0 ? null : nextBooking);
-            List<Comment> commentList = comments.get(item);
-            itemDto.setComments(commentList == null ? null : commentList
-                    .stream().map(CommentMapper::toCommentDto).collect(toList()));
+
+            List<Comment> commentList = comments.getOrDefault(item, Collections.emptyList());
+            itemDto.setComments(commentList.stream().map(CommentMapper::toCommentDto).collect(toList()));
             return itemDto;
         }).collect(toList());
     }

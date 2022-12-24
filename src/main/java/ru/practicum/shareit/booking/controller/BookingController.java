@@ -6,7 +6,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.model.StatusType;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exceptions.BadRequestException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,11 +17,8 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto create(@Valid @RequestBody BookingRequestDto bookingRequestDto,
+    public BookingDto create(@RequestBody @Valid BookingRequestDto bookingRequestDto,
                              @RequestHeader("X-Sharer-User-Id") Long userId) {
-        if (!bookingRequestDto.getEnd().isAfter(bookingRequestDto.getStart())) {
-            throw new BadRequestException("End date can not be earlier start date");
-        }
 
         return bookingService.create(bookingRequestDto, userId);
     }
