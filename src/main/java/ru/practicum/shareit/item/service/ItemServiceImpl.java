@@ -51,27 +51,32 @@ public class ItemServiceImpl implements ItemService {
         List<LastNextBookingDto> findLastNextBooking = bookingRepository.findLastNextBooking(items);
 
         if (findLastNextBooking.isEmpty()) {
-            throw new NotFoundException("Items not found");
+            throw new NotFoundException("Bookings were not found");
         }
 
         Map<Item, List<Comment>> comments = commentRepository.findAllByItemIn(itemList,
                 Sort.by(DESC, "created")).stream().collect(groupingBy(Comment::getItem, toList()));
+
         return itemList.stream().map(item -> {
             ItemDto itemDto = ItemMapper.toItemDto(item);
 
-            LastNextBookingDto lastNextBookingDto =
-                    findLastNextBooking.stream()
-                            .filter(o -> o.getItemId().equals(itemDto.getId()))
-                            .collect(toList()).get(0);
+            List<LastNextBookingDto> lastNextBookingDtos = findLastNextBooking.stream()
+                    .filter(o -> o.getItemId().equals(itemDto.getId()))
+                    .collect(toList());
 
-            ItemDto.BookingTiny lastBooking =
-                    ItemDto.BookingTiny.builder()
-                            .id(lastNextBookingDto.getLastBookingId())
-                            .bookerId(lastNextBookingDto.getLastBookingBookerId()).build();
-            ItemDto.BookingTiny nextBooking =
-                    ItemDto.BookingTiny.builder()
-                            .id(lastNextBookingDto.getNextBookingId())
-                            .bookerId(lastNextBookingDto.getNextBookingBookerId()).build();
+            if (lastNextBookingDtos.isEmpty()) {
+                throw new NotFoundException("Booking was not found");
+            }
+
+            LastNextBookingDto lastNextBookingDto = lastNextBookingDtos.get(0);
+
+            ItemDto.BookingTiny lastBooking = ItemDto.BookingTiny.builder()
+                    .id(lastNextBookingDto.getLastBookingId())
+                    .bookerId(lastNextBookingDto.getLastBookingBookerId()).build();
+
+            ItemDto.BookingTiny nextBooking = ItemDto.BookingTiny.builder()
+                    .id(lastNextBookingDto.getNextBookingId())
+                    .bookerId(lastNextBookingDto.getNextBookingBookerId()).build();
 
             itemDto.setLastBooking(lastBooking.getId() == 0 ? null : lastBooking);
             itemDto.setNextBooking(nextBooking.getId() == 0 ? null : nextBooking);
