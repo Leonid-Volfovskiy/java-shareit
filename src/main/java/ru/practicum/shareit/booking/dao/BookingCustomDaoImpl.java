@@ -26,7 +26,7 @@ public class BookingCustomDaoImpl implements BookingCustomDao {
                 "or lb.start_date < now() or lb.start_date = now() or lb.end_date = now() " +
                 "and lb.status = 'APPROVED' order by lb.end_date desc), 0) as lastBookingId, " +
                 "coalesce((select top 1 nb.id from bookings nb where nb.item_id = it.id and nb.start_date > now() " +
-                "and nb.status = 'APPROVED' order by nb.start_date asc), 0) as nextBookingId " +
+                "and nb.status = 'APPROVED' order by nb.start_date), 0) as nextBookingId " +
                 "from items as it where it.id in (:items)" +
                 ") a " +
                 "left join bookings abl on abl.id = a.lastBookingId " +

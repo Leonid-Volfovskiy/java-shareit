@@ -60,9 +60,15 @@ public class ItemServiceImpl implements ItemService {
         return itemList.stream().map(item -> {
             ItemDto itemDto = ItemMapper.toItemDto(item);
 
-            LastNextBookingDto lastNextBookingDto = findLastNextBooking.stream()
+            List<LastNextBookingDto> lastNextBookingsDto = findLastNextBooking.stream()
                     .filter(o -> o.getItemId().equals(itemDto.getId()))
-                    .collect(toList()).get(0);
+                    .collect(toList());
+
+            if (lastNextBookingsDto.isEmpty()) {
+                throw new NotFoundException("Bookings were not found");
+            }
+
+            LastNextBookingDto lastNextBookingDto = lastNextBookingsDto.get(0);
 
             ItemDto.BookingTiny lastBooking = ItemDto.BookingTiny.builder()
                     .id(lastNextBookingDto.getLastBookingId())
