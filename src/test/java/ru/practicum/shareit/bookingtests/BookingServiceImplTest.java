@@ -93,7 +93,7 @@ class BookingServiceImplTest {
                 .build();
 
         booking1 = Booking.builder()
-                .id(1l)
+                .id(1L)
                 .start(LocalDateTime.of(2023, 10, 25, 11, 0))
                 .end(LocalDateTime.of(2023, 10, 26, 11, 0))
                 .item(item1)
@@ -102,7 +102,7 @@ class BookingServiceImplTest {
                 .build();
 
         booking = Booking.builder()
-                .id(2l)
+                .id(2L)
                 .start(LocalDateTime.of(2023, 10, 25, 11, 0))
                 .end(LocalDateTime.of(2023, 10, 26, 11, 0))
                 .item(item1)

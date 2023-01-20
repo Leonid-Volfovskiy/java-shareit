@@ -83,7 +83,7 @@ class ItemServiceImplTest {
 
 
     @BeforeEach
-    void setUp() {
+    void init() {
         userDto1 = UserDto.builder()
                 .id(1L)
                 .name("user_name")
@@ -234,7 +234,7 @@ class ItemServiceImplTest {
 
 
     @Test
-    void create() { //ItemDto create(ItemInDto itemDto, Long ownerId)
+    void create() {
         when(userService.getById(anyLong())).thenReturn(userDto1);
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.ofNullable(itemRequest1));
         when(itemRepository.save(any(Item.class))).thenAnswer(returnsFirstArg());
@@ -244,7 +244,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void update() { //ItemDto update(ItemInDto itemDto, Long itemId, Long userId)
+    void update() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item1));
         ItemDto updated = itemService.update(itemInDto1Updated, item1.getId(), user1.getId());
         assertNotNull(updated);
@@ -252,18 +252,16 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getById() { //(Long itemId, Long ownerId) return itemDto
+    void getById() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item1));
         when(commentRepository.findAllByItemId(anyLong()))
                 .thenReturn(Collections.emptyList());
         when(bookingRepository
-                .findTopByItemIdAndEndBeforeAndStatusInOrderByEndDesc(anyLong()
-                        , any(LocalDateTime.class)
-                        , anyList())).thenReturn(Optional.ofNullable(lastBooking));
+                .findTopByItemIdAndEndBeforeAndStatusInOrderByEndDesc(anyLong(), any(LocalDateTime.class),
+                        anyList())).thenReturn(Optional.ofNullable(lastBooking));
         when(bookingRepository
-                .findTopByItemIdAndStartAfterAndStatusInOrderByStartAsc(anyLong()
-                        , any(LocalDateTime.class)
-                        , anyList())).thenReturn(Optional.ofNullable(nextBooking));
+                .findTopByItemIdAndStartAfterAndStatusInOrderByStartAsc(anyLong(),
+                        any(LocalDateTime.class), anyList())).thenReturn(Optional.ofNullable(nextBooking));
 
         ItemDto itemDto = itemService.getById(item1.getId(), user1.getId());
         itemDto1.setLastBooking(lastBookingTiny);
@@ -275,14 +273,12 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createComment() { //CommentDto createComment(Long itemId, Long userId, CommentDto commentDto)
+    void createComment() {
         when(userService.getById(anyLong())).thenReturn(userDto1);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item1));
-        when(bookingRepository.findAllByBookerIdAndItemIdAndStatusEqualsAndEndIsBefore(anyLong()
-                , anyLong()
-                , any(StatusType.class)
-                , any(LocalDateTime.class)))
-                .thenReturn(Stream.of(lastBooking, nextBooking).filter(Objects::nonNull).collect(Collectors.toList()));
+        when(bookingRepository.findAllByBookerIdAndItemIdAndStatusEqualsAndEndIsBefore(anyLong(), anyLong(),
+                any(StatusType.class), any(LocalDateTime.class))).thenReturn(Stream.of(lastBooking, nextBooking)
+                .filter(Objects::nonNull).collect(Collectors.toList()));
 
         when(commentRepository.save(any(Comment.class))).thenAnswer(returnsFirstArg());
         CommentDto created = itemService.createComment(item1.getId(), user1.getId(), commentDto1);
@@ -296,7 +292,7 @@ class ItemServiceImplTest {
 
 
     @Test
-    void findAllByRequestId() { //List<ItemDto> findAllByRequestId(Long requestId)
+    void findAllByRequestId() {
         List<Item> items = Stream.of(item1, item2).filter(Objects::nonNull).collect(toList());
         when(itemRepository.findAllByRequestId(anyLong())).thenReturn(items);
 
@@ -307,7 +303,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getByOwner() { //(Long ownerId, int from, int size) return List<ItemDto>
+    void getByOwner() {
         List<Item> items = Stream.of(item1, item2).filter(Objects::nonNull).collect(toList());
         List<LastNextBookingDto> findLastNextBooking = Stream.of(lastNextBookingDto)
                 .filter(Objects::nonNull).collect(toList());
@@ -322,7 +318,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void search() { //List<ItemDto> search(String searchedText, int from, int size)
+    void search() {
         when(itemRepository.findAllByCriteria(anyString(), any(PageRequest.class)))
                 .thenReturn(Stream.of(item1).filter(Objects::nonNull).collect(Collectors.toList()));
 

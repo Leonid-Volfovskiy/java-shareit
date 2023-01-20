@@ -58,7 +58,7 @@ class ItemRequestServiceImplTest {
 
 
     @BeforeEach
-    void SetUp() {
+    void init() {
         user1 = User.builder()
                 .id(1L)
                 .name("user_name")
