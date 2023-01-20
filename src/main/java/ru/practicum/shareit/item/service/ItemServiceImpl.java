@@ -36,6 +36,8 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static ru.practicum.shareit.booking.model.StatusType.APPROVED;
 
+;
+
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
@@ -157,7 +159,6 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto delete(Long itemId, Long userId) {
         ItemDto itemDto = getById(itemId, userId);
         itemRepository.deleteById(itemId);
-
         return itemDto;
     }
 

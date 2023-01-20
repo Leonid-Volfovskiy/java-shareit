@@ -81,8 +81,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private List<ItemRequestDto> getItemRequestDtoList(List<ItemRequest> itemRequestList) {
-        Map<ItemRequest, List<Item>> items = itemRepository
-                .findAllByRequestIn(itemRequestList)
+        Map<ItemRequest, List<Item>> items = itemRepository.findAllByRequestIn(itemRequestList)
                 .stream().collect(groupingBy(Item::getRequest, toList()));
 
         return itemRequestList.stream().map(itemRequest -> {

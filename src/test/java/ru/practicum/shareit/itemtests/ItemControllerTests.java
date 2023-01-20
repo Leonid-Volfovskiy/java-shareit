@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.shareit.booking.BookingController;
+import ru.practicum.shareit.booking.controller.BookingController;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
@@ -19,6 +19,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -166,7 +167,7 @@ public class ItemControllerTests {
 
     @Test
     void searchWithWrongFrom() {
-        assertThrows(IllegalArgumentException.class, () -> itemController.search("t", -1, 10));
+        assertThrows(ConstraintViolationException.class, () -> itemController.search("t", -1, 10));
     }
 
     @Test
@@ -200,6 +201,6 @@ public class ItemControllerTests {
 
     @Test
     void getAllWithWrongFrom() {
-        assertThrows(IllegalArgumentException.class, () -> itemController.getAllByOwner(1L, -1, 10));
+        assertThrows(ConstraintViolationException.class, () -> itemController.getAllByOwner(1L, -1, 10));
     }
 }

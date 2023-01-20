@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.booking.BookingController;
+import ru.practicum.shareit.booking.controller.BookingController;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.model.StatusType;
@@ -67,8 +67,8 @@ public class BookingControllerWithMockMvcTests {
         bookingDto = BookingDto
                 .builder()
                 .id(1L)
-                .start(LocalDateTime.of(2023, 1, 12, 10, 0))
-                .end(LocalDateTime.of(2023, 1, 20, 10, 0))
+                .start(LocalDateTime.of(2023, 2, 12, 10, 0))
+                .end(LocalDateTime.of(2023, 2, 20, 10, 0))
                 .booker(BookingDto.Booker.builder().id(userDto.getId()).name(userDto.getName()).build())
                 .item(BookingDto.BookedItem.builder().id(itemDto.getId()).name(itemDto.getName()).build())
                 .build();
@@ -76,8 +76,8 @@ public class BookingControllerWithMockMvcTests {
         bookingInDto = BookingRequestDto
                 .builder()
                 .id(1L)
-                .start(LocalDateTime.of(2023, 1, 12, 10, 0))
-                .end(LocalDateTime.of(2023, 1, 20, 10, 0))
+                .start(LocalDateTime.of(2023, 2, 12, 10, 0))
+                .end(LocalDateTime.of(2023, 2, 20, 10, 0))
                 .itemId(1L)
                 .build();
     }
@@ -93,7 +93,7 @@ public class BookingControllerWithMockMvcTests {
                         .header("X-Sharer-User-Id", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(bookingDto)));
+                .andExpect(content().json(mapper.writeValueAsString(bookingDto))); //важно поменять даты в bookingDTO
     }
 
     @Test
