@@ -165,7 +165,6 @@ class BookingServiceImplTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking1);
 
         BookingDto created = bookingService.create(bookingRequestDto1, user1.getId());
-
         assertNotNull(created);
         assertEquals(created, bookingDto1);
 
