@@ -21,11 +21,11 @@ public class Item {
     private Long id;
 
     @NotBlank
-    @Column(length = 50, nullable = false)
+    @Column(length = 1024, nullable = false)
     private String name;
 
     @NotBlank
-    @Column(length = 200, nullable = false)
+    @Column(length = 1024, nullable = false)
     private String description;
 
     @Column(name = "is_available")
